@@ -1,12 +1,10 @@
-# Resource Override
+# Resource Override 用友内部版
 
-## ~~ This extension is now in maintenance mode!! ~~
+针对原版override进行了功能扩充
 
-See what this means here: [maintenance_notice.md](maintenance_notice.md).
+1. 局部汉化
+2. 代理规则分组可以命名 方便检索
 
-Resource Override is an extension to help you gain full control of any website by redirecting traffic, replacing, editing, or inserting new content.
 
-[Get the chrome extension here](https://chrome.google.com/webstore/detail/resource-override/pkoacgokdfckfpndoffpifphamojphii).
 
-### Now on firefox!
-[Get the FireFox extension here](https://addons.mozilla.org/en-US/firefox/addon/resourceoverride/)
+##### 有其他需要可以提issue
