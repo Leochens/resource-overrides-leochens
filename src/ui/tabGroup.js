@@ -54,6 +54,52 @@
         };
     }
 
+    function move(type, id) {
+
+        chrome.runtime.sendMessage({
+            action: "getDomains",
+        }, (domains) => {
+            domains = domains.map((d, idx) => ({
+                ...d,
+                idx
+            }))
+            if (type === 'up') {
+                if (id == 0) {
+                    return app.util.showToast("已经是第一个了，不能上移！")
+                }
+                let index = id;
+                let pre = index - 1;
+                const preDomain = domains[pre]
+                const curDomain = domains[index];
+                domains.splice(index, 1, preDomain);
+                domains.splice(pre, 1, curDomain);
+            } else if (type === 'down') {
+                if (id == (domains.length - 1)) {
+                    return app.util.showToast("已经是最后一个了，不能下移！")
+                }
+                let index = id;
+                let after = index + 1;
+                const afterDomain = domains[after]
+                const curDomain = domains[index];
+                domains.splice(index, 1, afterDomain);
+                domains.splice(after, 1, curDomain);
+            } else {
+                return;
+            }
+            domains.forEach((d) => {
+                delete d.idx;
+            })
+            chrome.runtime.sendMessage({
+                action: "clear",
+            }, () => {
+                chrome.runtime.sendMessage({
+                    action: "import",
+                    data: domains
+                })
+            })
+        })
+    }
+
     function getDomainData(domain) {
         const rules = [];
         domain.find(".ruleContainer").each(function (idx, el) {
@@ -93,10 +139,6 @@
                 });
             }
         });
-
-
-
-
         const d = {
             id: domain[0].id,
             name: domain.find(".domainName").text(),
@@ -116,12 +158,17 @@
         const domainName = domain.find(".domainName")[0];
         const onOffBtn = domain.find(".onoffswitch");
         const deleteBtn = domain.find(".deleteBtn");
-        const rules = savedData.rules || [];
+        const groupMoveUpBtn = domain.find("#groupMoveUp");
+        const groupMoveDownBtn = domain.find("#groupMoveDown");
+        const indexFlag = domain.find("#indexFlag")[0];
 
+
+        const rules = savedData.rules || [];
+        indexFlag.innerHTML = savedData.idx;
+        console.log(savedData, indexFlag)
         const id = savedData.id || util.getNextId($(".domainContainer"), "d");
         domain[0].id = id;
         const saveFunc = util.debounce(createSaveFunction(id), 700);
-
         if (rules.length) {
             rules.forEach(function (rule) {
                 if (rule.type === "normalOverride") {
@@ -161,6 +208,12 @@
 
         addRuleBtn.on("click", function () {
             showRuleDropdown(addRuleBtn, addRuleCallback, saveFunc);
+        });
+        groupMoveUpBtn.on("click", function () {
+            move('up', savedData.idx);
+        });
+        groupMoveDownBtn.on("click", function () {
+            move('down', savedData.idx);
         });
 
 

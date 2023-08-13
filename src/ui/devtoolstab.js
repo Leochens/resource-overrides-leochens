@@ -18,7 +18,8 @@
         ui.domainDefs.children().remove();
         chrome.runtime.sendMessage({action: "getDomains"}, function(domains) {
             if (domains.length) {
-                domains.forEach(function(domain) {
+                domains.forEach(function(domain, idx) {
+                    domain.idx = idx;
                     const domainMarkup = app.createDomainMarkup(domain);
                     ui.domainDefs.append(domainMarkup);
                 });

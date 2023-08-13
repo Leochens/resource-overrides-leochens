@@ -6,44 +6,59 @@
     const simpleError = bgapp.util.simpleError;
 
     // Called when the user clicks on the browser action icon.
-    chrome.browserAction.onClicked.addListener(function() {
+    chrome.browserAction.onClicked.addListener(function () {
         // open or focus options page.
         const optionsUrl = chrome.runtime.getURL("src/ui/devtoolstab.html");
-        chrome.tabs.query({}, function(extensionTabs) {
+        chrome.tabs.query({}, function (extensionTabs) {
             let found = false;
             for (let i = 0, len = extensionTabs.length; i < len; i++) {
                 if (optionsUrl === extensionTabs[i].url) {
                     found = true;
-                    chrome.tabs.update(extensionTabs[i].id, {selected: true});
+                    chrome.tabs.update(extensionTabs[i].id, {
+                        selected: true
+                    });
                     break;
                 }
             }
             if (found === false) {
-                chrome.tabs.create({url: optionsUrl});
+                chrome.tabs.create({
+                    url: optionsUrl
+                });
             }
         });
     });
 
-    const syncAllInstances = function() {
+    const syncAllInstances = function () {
         // Doing this weird dance because I cant figure out how to
         // send data from this script to the dev tools script.
         // Nothing seems to work (even the examples!).
-        bgapp.syncFunctions.forEach(function(fn) {
+        bgapp.syncFunctions.forEach(function (fn) {
             try {
                 fn();
-            } catch (e) { /**/ }
+            } catch (e) {
+                /**/
+            }
         });
         bgapp.syncFunctions = [];
     };
 
-    chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         if (request.action === "saveDomain") {
             bgapp.mainStorage.put(request.data)
                 .then(syncAllInstances)
                 .catch(simpleError);
             bgapp.ruleDomains[request.data.id] = request.data;
+        } else if (request.action === "saveDomains") {
+            Promise.all(request.data.map(function (domainData) {
+                    // dont overwrite any pre-existing domains.
+                    // domainData.id = "d" + maxId++;
+                    bgapp.ruleDomains[domainData.id] = domainData;
+                    return bgapp.mainStorage.put(domainData);
+                }))
+                .then(syncAllInstances)
+                .catch(simpleError);
         } else if (request.action === "getDomains") {
-            bgapp.mainStorage.getAll().then(function(domains) {
+            bgapp.mainStorage.getAll().then(function (domains) {
                 sendResponse(domains || []);
             }).catch(simpleError);
         } else if (request.action === "deleteDomain") {
@@ -51,24 +66,30 @@
                 .then(syncAllInstances)
                 .catch(simpleError);
             delete bgapp.ruleDomains[request.id];
+        } else if (request.action === "clear") {
+            bgapp.mainStorage.clear().then(e => {
+                sendResponse(e)
+            }).catch(e => {
+                sendResponse(e)
+            })
         } else if (request.action === "import") {
             let maxId = 0;
             for (const id in bgapp.ruleDomains) {
                 maxId = Math.max(maxId, parseInt(id.substring(1)));
             }
             maxId++;
-            Promise.all(request.data.map(function(domainData) {
-                // dont overwrite any pre-existing domains.
-                domainData.id = "d" + maxId++;
-                bgapp.ruleDomains[domainData.id] = domainData;
-                return bgapp.mainStorage.put(domainData);
-            }))
-            .then(syncAllInstances)
-            .catch(simpleError);
+            Promise.all(request.data.map(function (domainData) {
+                    // dont overwrite any pre-existing domains.
+                    domainData.id = "d" + maxId++;
+                    bgapp.ruleDomains[domainData.id] = domainData;
+                    return bgapp.mainStorage.put(domainData);
+                }))
+                .then(syncAllInstances)
+                .catch(simpleError);
         } else if (request.action === "makeGetRequest") {
             const xhr = new XMLHttpRequest();
             xhr.open("GET", request.url, true);
-            xhr.onreadystatechange = function() {
+            xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) {
                     sendResponse(xhr.responseText);
                 }
@@ -90,7 +111,7 @@
         return true;
     });
 
-    chrome.webRequest.onBeforeRequest.addListener(function(details) {
+    chrome.webRequest.onBeforeRequest.addListener(function (details) {
         if (!bgapp.requestIdTracker.has(details.requestId)) {
             if (details.tabId > -1) {
                 let tabUrl = bgapp.tabUrlTracker.getUrlFromId(details.tabId);
@@ -132,12 +153,11 @@
     }
 
     // init domain storage
-    bgapp.mainStorage.getAll().then(function(domains) {
+    bgapp.mainStorage.getAll().then(function (domains) {
         if (domains) {
-            domains.forEach(function(domainObj) {
+            domains.forEach(function (domainObj) {
                 bgapp.ruleDomains[domainObj.id] = domainObj;
             });
         }
     }).catch(simpleError);
-
 }

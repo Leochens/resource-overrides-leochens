@@ -44,6 +44,11 @@
             });
         };
 
+        const clear = function(){
+            return new Promise((resolve)=>{
+                domainStore.clearStore((e)=>resolve(e));
+            })
+        }
         const deleteDomain = function(id) {
             return new Promise(function(res, rej) {
                 db.open(function(err) {
@@ -67,7 +72,8 @@
         return {
             put: put,
             getAll: getDomains,
-            delete: deleteDomain
+            delete: deleteDomain,
+            clear: clear
         };
     })();
 }
