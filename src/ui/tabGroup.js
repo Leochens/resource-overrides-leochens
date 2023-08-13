@@ -160,7 +160,6 @@
         const deleteBtn = domain.find(".deleteBtn");
         const groupMoveUpBtn = domain.find("#groupMoveUp");
         const groupMoveDownBtn = domain.find("#groupMoveDown");
-        const indexFlag = domain.find("#indexFlag")[0];
 
 
         const rules = savedData.rules || [];
