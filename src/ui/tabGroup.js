@@ -163,8 +163,6 @@
 
 
         const rules = savedData.rules || [];
-        indexFlag.innerHTML = savedData.idx;
-        console.log(savedData, indexFlag)
         const id = savedData.id || util.getNextId($(".domainContainer"), "d");
         domain[0].id = id;
         const saveFunc = util.debounce(createSaveFunction(id), 700);
