@@ -112,6 +112,9 @@
     });
 
     chrome.webRequest.onBeforeRequest.addListener(function (details) {
+        // 当全局关闭时 都不会走override
+        const globalOff = localStorage.getItem("globalOff")
+        if (globalOff === 'true') return;
         if (!bgapp.requestIdTracker.has(details.requestId)) {
             if (details.tabId > -1) {
                 let tabUrl = bgapp.tabUrlTracker.getUrlFromId(details.tabId);

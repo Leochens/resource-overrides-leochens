@@ -122,6 +122,7 @@
                 }
             });
         }
+        util.showGlobalOff(localStorage.getItem('globalOff'), false);
     }
 
     init();

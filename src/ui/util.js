@@ -114,5 +114,18 @@
         return navigator.userAgent.indexOf("Chrome") > -1;
     };
 
+    util.showGlobalOff = function(newVal, showToast = true) {
+        if (newVal === 'true'){
+            ui.globalOffBtn.css("background",'red')
+            ui.globalOffBtn.css("color",'white')
+            app.ui.body.css("background","pink")
+            showToast && util.showToast("Override已全局关闭，所有页面均不会被代理！")
+        }else {
+            ui.globalOffBtn.css("background",'')
+            ui.globalOffBtn.css("color",'black')
+            app.ui.body.css("background","")
+            showToast && util.showToast("Override已取消全局关闭，所有页面代理遵循代理规则！")
+        }
+    }
     app.util = util;
 })();

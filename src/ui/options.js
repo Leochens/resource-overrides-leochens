@@ -12,7 +12,13 @@
         if (e.target.id === "optionsBtn") {
             ui.optionsPopOver.toggle();
             ui.helpOverlay.hide();
-        } else {
+        } else if(e.target.id === "globalOffBtn"){
+            const globalOff = localStorage.getItem("globalOff") || 'false'
+            const newVal = globalOff === 'false' ? 'true': 'false';
+            localStorage.setItem('globalOff', newVal)
+            util.showGlobalOff(newVal)
+        } 
+        else {
             if ($target.closest("#optionsPopOver").length === 0) {
                 ui.optionsPopOver.hide();
             }
