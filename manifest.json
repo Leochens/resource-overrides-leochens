@@ -1,7 +1,7 @@
 {
 "update_url": "https://clients2.google.com/service/update2/crx",
 
-  "name": "Resource Override",
+  "name": "Resource Override-YY",
   "version": "1.3.1",
   "description": "An extension to help you gain full control of any website by redirecting traffic, replacing, editing, or inserting new content.",
   "icons": {
