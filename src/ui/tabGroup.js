@@ -144,7 +144,8 @@
             name: domain.find(".domainName").text(),
             matchUrl: domain.find(".domainMatchInput").val(),
             rules: rules,
-            on: domain.find(".onoffswitch")[0].isOn
+            on: domain.find(".onoffswitch")[0].isOn,
+            collapse: domain.attr('collapse') === 'true' ? true : false
         };
         return d;
     }
@@ -153,6 +154,8 @@
         savedData = savedData || {};
         const domain = util.instanceTemplate(ui.domainTemplate);
         const overrideRulesContainer = domain.find(".overrideRules");
+        const collapseBtn = domain.find("#collase");
+        const content = domain.find('#content');
         const addRuleBtn = domain.find(".addRuleBtn");
         const domainMatchInput = domain.find(".domainMatchInput");
         const domainName = domain.find(".domainName")[0];
@@ -160,9 +163,17 @@
         const deleteBtn = domain.find(".deleteBtn");
         const groupMoveUpBtn = domain.find("#groupMoveUp");
         const groupMoveDownBtn = domain.find("#groupMoveDown");
-
-
+        // console.log(savedData)
+        const collapse = savedData.collapse;
         const rules = savedData.rules || [];
+        domain.attr('collapse',collapse);
+        if(collapse) {
+            collapseBtn.text(`展开${rules?.length}`)
+            content.addClass('hidden');
+        }else{
+            collapseBtn.text(`折叠(${rules?.length})`)
+            content.removeClass('hidden');
+        }
         const id = savedData.id || util.getNextId($(".domainContainer"), "d");
         domain[0].id = id;
         const saveFunc = util.debounce(createSaveFunction(id), 700);
@@ -182,9 +193,12 @@
 
         const mvRules = app.moveableRules(overrideRulesContainer[0], ".handle");
         mvRules.onMove(saveFunc);
+        const mvGroups = app.moveableRules(document.getElementById('domainDefs'), ".group-handle");
+        mvGroups.onMove(saveFunc);
+
         if (domainName) {
 
-            domainName.innerHTML = savedData.name || '未命名'
+            domainName.innerHTML = savedData.name || '未命名' 
             domainName.onblur = function (e) {
                 saveFunc();
 
@@ -238,6 +252,18 @@
         deleteBtn.on("mouseout", function () {
             util.deleteButtonIsSureReset(deleteBtn);
         });
+        collapseBtn.on('click', () => {
+            const c = domain.attr('collapse') === 'true' ? true : false;
+            content.toggleClass("hidden", !c);
+            if (c) {
+                domain.attr('collapse',false)
+                collapseBtn.text(`折叠(${rules?.length})`)
+            }else {
+                domain.attr('collapse',true)
+                collapseBtn.text(`展开${rules?.length}`)
+            }
+            saveFunc();
+        })
 
         return domain;
     }

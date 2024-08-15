@@ -22,33 +22,39 @@
             </label>
         </div>
     </template>
-
+ 
     <template id="domainTemplate">
         <div class="domainContainer">
             <div class="domainNameWraper">
-                <div class="domainName" contenteditable="true">
-                </div>
+                <!-- <div class="group-handle">
+                    <div class="arrow-up"></div>
+                    <div class="arrow-down"></div>
+                </div> -->
+                &nbsp;
+                <div class="domainName" contenteditable="true"></div>
+                <button id="collase">折叠</button> &nbsp; 
                 <!-- <button class="btn" id="groupMoveUp" >上移</button>&nbsp;<button class="btn" id="groupMoveDown">下移</button> -->
                 <div style="display: none;" id="indexFlag"></div>
             </div>
-
-            <div class="domainHeader">
-                <div class="domainText" >
-                    代理生效域:
+            <div id="content">
+                <div class="domainHeader">
+                    <div class="domainText" >
+                        代理生效域:
+                    </div>
+                    <div class="domain">
+                        <input type="input" class="domainMatchInput" placeholder="Tab Match URL">
+                    </div>
+                    <div class="addRule">
+                        <button class="btn addRuleBtn">添加规则</button>
+                    </div>
+                    <div class="switch"></div>
+                    <div class="delete">
+                        <button class="deleteBtn btn sym-btn">&#215</button>
+                    </div>
                 </div>
-                <div class="domain">
-                    <input type="input" class="domainMatchInput" placeholder="Tab Match URL">
+                <div class="overrideRules">
+    
                 </div>
-                <div class="addRule">
-                    <button class="btn addRuleBtn">添加规则</button>
-                </div>
-                <div class="switch"></div>
-                <div class="delete">
-                    <button class="deleteBtn btn sym-btn">&#215</button>
-                </div>
-            </div>
-            <div class="overrideRules">
-
             </div>
         </div>
     </template>
@@ -200,13 +206,16 @@
     </template>
 
     <div id="title">
-        <h1>Resource Override-用友内部版V2</h1>
+        <h1>Resource Override-用友内部版V3</h1>
     </div>
 
     <div id="helpAndOptions">
         <div class="optionsBtnContainer"><button id="optionsBtn" class="btn">选项</button></div>
-        <div class="optionsBtnContainer">
-         <button id="globalOffBtn" class="btn">全局关闭</button></div>
+        <!-- <div class="optionsBtnContainer">
+            <button id="globalCollapseOff" class="btn">全部展开</button>
+            <button id="globalCollapseOn" class="btn">全部折叠</button>
+            <button id="globalOffBtn" class="btn">全局关闭</button>
+        </div> -->
         <div class="helpBtnContainer"><button id="helpBtn" class="btn">帮助</button></div>
 
         <div id="optionsPopOver">

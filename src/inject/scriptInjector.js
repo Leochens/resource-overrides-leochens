@@ -51,7 +51,7 @@
 
     chrome.runtime.onMessage.addListener(function(msg) {
         if (msg.action === 'log') {
-            var logStyle = "color: #007182; font-weight: bold;";
+            var logStyle = "color: #ff5303; font-weight: bold;";
             if (msg.important) {
                 logStyle += "background: #AAFFFF;";
             }

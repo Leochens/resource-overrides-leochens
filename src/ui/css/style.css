@@ -61,7 +61,9 @@ div, span {
     border-radius: 5px;
     border: 2px solid #999999;
 }
-
+.hidden{
+    display: none;
+}
 #optionsPopOver .optionRow {
     float: left;
     width: 100%;
@@ -300,7 +302,11 @@ div, span {
 }
 
 .domainContainer {
-    margin-bottom: 40px;
+    margin-bottom: 10px;
+    /* border: 2px solid rgb(0, 0, 0); */
+    box-shadow: 4px 4px 8px #888;
+    padding: 10px;
+    border-radius: 6px;
     transition: opacity 0.5s;
 }
 
@@ -323,6 +329,7 @@ div, span {
     align-items: center;
     font-weight: 600;
     color: #333;
+    margin-bottom: 10px;
 
 
 }
@@ -503,7 +510,9 @@ div, span {
 }
 
 .disabled {
-    opacity: 0.7;
+    opacity: 0.5;
+    box-shadow: none;
+
 }
 
 .fileInput {
