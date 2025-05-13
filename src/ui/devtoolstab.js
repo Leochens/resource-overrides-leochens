@@ -108,18 +108,31 @@
         const domains = [...container.querySelectorAll('.domainContainer')];
         const currentIndex = domains.indexOf(domainContainer[0]);
 
-        if (type === 'up') {
-            if (currentIndex === 0) {
-                return util.showToast("已经是第一个了，不能上移！");
-            }
-            // 使用 jQuery 的 insertBefore 方法，避免重绘
-            domainContainer.insertBefore($(domains[currentIndex - 1]));
-        } else if (type === 'down') {
-            if (currentIndex === domains.length - 1) {
-                return util.showToast("已经是最后一个了，不能下移！");
-            }
-            // 使用 jQuery 的 insertAfter 方法，避免重绘
-            domainContainer.insertAfter($(domains[currentIndex + 1]));
+        switch(type) {
+            case 'up':
+                if (currentIndex === 0) {
+                    return util.showToast("已经是第一个了，不能上移！");
+                }
+                domainContainer.insertBefore($(domains[currentIndex - 1]));
+                break;
+            case 'down':
+                if (currentIndex === domains.length - 1) {
+                    return util.showToast("已经是最后一个了，不能下移！");
+                }
+                domainContainer.insertAfter($(domains[currentIndex + 1]));
+                break;
+            case 'top':
+                if (currentIndex === 0) {
+                    return util.showToast("已经在顶部了！");
+                }
+                domainContainer.prependTo(container);
+                break;
+            case 'bottom':
+                if (currentIndex === domains.length - 1) {
+                    return util.showToast("已经在底部了！");
+                }
+                domainContainer.appendTo(container);
+                break;
         }
 
         // 标记有未保存的更改
@@ -170,14 +183,19 @@
             saveCurrentSort();
         });
 
-        // 处理分组的上移和下移
-        ui.domainDefs.on('click', '#groupMoveUp, #groupMoveDown', function(e) {
+        // 处理分组的移动
+        ui.domainDefs.on('click', '#groupMoveUp, #groupMoveDown, #groupMoveTop, #groupMoveBottom', function(e) {
             const btn = $(this);
             const domainContainer = btn.closest('.domainContainer');
-            const isUp = btn.attr('id') === 'groupMoveUp';
+            const moveType = {
+                'groupMoveUp': 'up',
+                'groupMoveDown': 'down',
+                'groupMoveTop': 'top',
+                'groupMoveBottom': 'bottom'
+            }[btn.attr('id')];
             
             // 直接调用本地移动函数
-            moveLocal(isUp ? 'up' : 'down', domainContainer);
+            moveLocal(moveType, domainContainer);
         });
 
         // 添加离开页面前的提示
